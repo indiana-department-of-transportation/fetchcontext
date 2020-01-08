@@ -9,7 +9,7 @@
  * @license MIT
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import ctxprovider from '@indot/react-ctx-store';
 import useFetch from '@indot/usefetch';
@@ -23,6 +23,10 @@ export interface ICtxReducerAction {
 
 export interface IPojo {
   [key: string]: any,
+}
+
+export interface IErrorComponent {
+  error: Error,
 }
 
 export interface IUseFetchContextParams {
@@ -56,23 +60,40 @@ export const reducer = (_state: ReducerState, action: ICtxReducerAction): Reduce
   }
 };
 
+export const DefaultLoadingComponent = () => <div>...</div>;
+export const DefaultErrorComponent = ({
+  error,
+}: {
+  error: Error,
+}) => {
+  useEffect(() => {
+    console.error(error);
+  }, []);
+
+  return (
+    <div>Oops! Error loading data, see console for details</div>
+  );
+};
+
+
 /**
  * @description Renders the results of a fetch when available or the error
  * if the fetch fails. Displays a loading component until the fetch resolves.
  *
  * @param {Object} [props] The destructured props object.
- * @param {React.ReactNode} props.children The React child.
- * @param {number} props.timeout The optional timeout for the fetch, defaults to 3 seconds.
- * @param {boolean} props.cache Whether or not to cache the fetch result. Unlike the
- * underlying useFetch hook, here we default to true.
- * @returns {React.FunctionComponent} The FetchRenderer component.
+ * @param {string} props.request The URL string or Request object to fetch.
+ * @param {number} props.timeout Optional timeout in milliseconds.
+ * @param {boolean} props.cache Whether or not to cache the result of the fetch.
+ * @param {React.Element} props.LoadingComponent The component to display until the fetch resolves.
+ * @param {React.Element} props.ErrorComponent The component to display if the fetch fails.
+ * @returns {Array} A tuple of the hook to use the data, and the context provider to provide it.
  */
 export default ({
-  LoadingComponent,
-  ErrorComponent,
   request,
-  timeout = 3000,
+  timeout = 30000,
   cache = true,
+  LoadingComponent = DefaultLoadingComponent,
+  ErrorComponent = DefaultErrorComponent,
 }: IUseFetchContextParams): [() => any, React.ReactType] => {
   const [useContextDataReducer, CtxProvider] = ctxprovider<ReducerState, ICtxReducerAction>();
   const FetchRenderer = ({
