@@ -1,6 +1,6 @@
 {
   "name": "@indot/fetchcontext",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Custom fetch react hook and context provider",
   "main": "dist/fetchcontext.js",
   "scripts": {
