@@ -22,9 +22,11 @@
   ],
   "author": "jasmith79",
   "license": "MIT",
-  "peerDependencies": {
+  "dependencies": {
     "@indot/react-ctx-store": "0.0.5",
-    "@indot/usefetch": "0.0.7",
+    "@indot/usefetch": "0.0.7"
+  },
+  "peerDependencies": {
     "@types/react": "^16.9.2",
     "@types/react-dom": "^16.9.0",
     "prop-types": "^15.7.2",
