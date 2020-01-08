@@ -42,18 +42,26 @@ exports.reducer = (_state, action) => {
             throw new Error(`Unknown dispatch for ${action.type}`);
     }
 };
+exports.DefaultLoadingComponent = () => react_1.default.createElement("div", null, "...");
+exports.DefaultErrorComponent = ({ error, }) => {
+    react_1.useEffect(() => {
+        console.error(error);
+    }, []);
+    return (react_1.default.createElement("div", null, "Oops! Error loading data, see console for details"));
+};
 /**
  * @description Renders the results of a fetch when available or the error
  * if the fetch fails. Displays a loading component until the fetch resolves.
  *
  * @param {Object} [props] The destructured props object.
- * @param {React.ReactNode} props.children The React child.
- * @param {number} props.timeout The optional timeout for the fetch, defaults to 3 seconds.
- * @param {boolean} props.cache Whether or not to cache the fetch result. Unlike the
- * underlying useFetch hook, here we default to true.
- * @returns {React.FunctionComponent} The FetchRenderer component.
+ * @param {string} props.request The URL string or Request object to fetch.
+ * @param {number} props.timeout Optional timeout in milliseconds.
+ * @param {boolean} props.cache Whether or not to cache the result of the fetch.
+ * @param {React.Element} props.LoadingComponent The component to display until the fetch resolves.
+ * @param {React.Element} props.ErrorComponent The component to display if the fetch fails.
+ * @returns {Array} A tuple of the hook to use the data, and the context provider to provide it.
  */
-exports.default = ({ LoadingComponent, ErrorComponent, request, timeout = 3000, cache = true, }) => {
+exports.default = ({ request, timeout = 30000, cache = true, LoadingComponent = exports.DefaultLoadingComponent, ErrorComponent = exports.DefaultErrorComponent, }) => {
     const [useContextDataReducer, CtxProvider] = react_ctx_store_1.default();
     const FetchRenderer = ({ children, }) => {
         const [state, dispatch] = useContextDataReducer();

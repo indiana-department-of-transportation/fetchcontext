@@ -18,6 +18,9 @@ export interface ICtxReducerAction {
 export interface IPojo {
     [key: string]: any;
 }
+export interface IErrorComponent {
+    error: Error;
+}
 export interface IUseFetchContextParams {
     LoadingComponent: React.ComponentType<{}>;
     ErrorComponent: React.ComponentType<{
@@ -36,16 +39,21 @@ declare type ReducerState = boolean | null | undefined | Error | IPojo | any[];
  * @returns {Any} The new state.
  */
 export declare const reducer: (_state: ReducerState, action: ICtxReducerAction) => ReducerState;
-declare const _default: ({ LoadingComponent, ErrorComponent, request, timeout, cache, }: IUseFetchContextParams) => [() => any, React.ElementType<any>];
+export declare const DefaultLoadingComponent: () => JSX.Element;
+export declare const DefaultErrorComponent: ({ error, }: {
+    error: Error;
+}) => JSX.Element;
+declare const _default: ({ request, timeout, cache, LoadingComponent, ErrorComponent, }: IUseFetchContextParams) => [() => any, React.ElementType<any>];
 /**
  * @description Renders the results of a fetch when available or the error
  * if the fetch fails. Displays a loading component until the fetch resolves.
  *
  * @param {Object} [props] The destructured props object.
- * @param {React.ReactNode} props.children The React child.
- * @param {number} props.timeout The optional timeout for the fetch, defaults to 3 seconds.
- * @param {boolean} props.cache Whether or not to cache the fetch result. Unlike the
- * underlying useFetch hook, here we default to true.
- * @returns {React.FunctionComponent} The FetchRenderer component.
+ * @param {string} props.request The URL string or Request object to fetch.
+ * @param {number} props.timeout Optional timeout in milliseconds.
+ * @param {boolean} props.cache Whether or not to cache the result of the fetch.
+ * @param {React.Element} props.LoadingComponent The component to display until the fetch resolves.
+ * @param {React.Element} props.ErrorComponent The component to display if the fetch fails.
+ * @returns {Array} A tuple of the hook to use the data, and the context provider to provide it.
  */
 export default _default;
